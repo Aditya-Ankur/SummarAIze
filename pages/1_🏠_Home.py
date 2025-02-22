@@ -43,7 +43,7 @@ st.markdown("""
         margin-bottom: 4rem;
         line-height: 1.6;
     }
-    .custom-button, .custom-button-legal, .custom-button-medical {
+    .custom-button-general, .custom-button-legal, .custom-button-medical {
         display: block;
         padding: 1.5rem;
         font-size: 1.5rem;
@@ -57,9 +57,9 @@ st.markdown("""
         color: #ffffff;
         backdrop-filter: blur(10px);
     }
-    .custom-button:hover {
+    .custom-button-general:hover {
         transform: translateY(-2px);
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(107, 235, 52, 0.69);
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
     .custom-button-legal:hover {
@@ -108,7 +108,7 @@ col1, col2, col3 = st.columns([1, 1, 1])
 
 with col1:
     st.markdown('''
-        <a href="/General" class="custom-button" style="text-decoration: none; color:white;">
+        <a href="/General" class="custom-button-general" style="text-decoration: none; color:white;">
             General
         </a>
         <div class="feature-box">
