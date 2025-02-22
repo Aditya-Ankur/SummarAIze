@@ -1,5 +1,11 @@
 streamlit
 pdfplumber
 python-docx
+requests
+langchain
+langchain-core
+langchain-community
+langchain-groq
+langchain-openai
+python-dotenv
 openai
-io
