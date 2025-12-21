@@ -6,7 +6,7 @@ SummarAIze is a web app built on `python` with the help of `streamlit`
 
 ## Link to the app
 The app is deployed on *streamlit community cloud* and can be viewed with the link given below
-> https://aditya-ankur-summaraize-summaraize-ex06bc.streamlit.app/
+> https://summaraize-ex06bc.streamlit.app/
 
 ## Installing dependencies
 ```shell
