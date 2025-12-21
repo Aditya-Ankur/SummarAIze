@@ -56,7 +56,7 @@ def summarize_text(text, category):
     }
     
     response = client.chat.completions.create(
-        model="deepseek/deepseek-r1:free",
+        model="deepseek/deepseek-r1-0528:free",
         messages=[
             {"role": "system", "content": "You are a AI model that summarizes the text in simple words."},
             {"role": "user", "content": prompts[category]}
