@@ -54,13 +54,13 @@ def summarize_text(text, category):
     }
     
     response = client.chat.completions.create(
-        model="deepseek/deepseek-r1-0528:free",
+        model="qwen/qwen3-next-80b-a3b-instruct:free",
         messages=[
             {"role": "system", "content": "You are a AI model that summarizes the text in simple words."},
             {"role": "user", "content": prompts[category]}
         ],
         temperature=1.0,
-        max_completion_tokens=128000,
+        max_completion_tokens=4096,
     )
 
     output = response.choices[0].message.content
@@ -70,13 +70,13 @@ def summarize_text(text, category):
 def ask_followup(summary, question):
     prompt = f"Based on the following summary:\n\n{summary}\n\n .Please answer the following Question: {question} and please do not show any internal reasoning, chain-of-thought, or explanation of your process. Answer it in detailed and simple words without too much medical jargons."
     response = client.chat.completions.create(
-        model="deepseek/deepseek-r1:free",
+        model="qwen/qwen3-next-80b-a3b-instruct:free",
         messages=[
             {"role": "system", "content": "You are an AI assistant that provides thoughtful answers based on the given summary."},
             {"role": "user", "content": prompt}
         ],
         temperature=1.0,
-        max_completion_tokens=128000,
+        max_completion_tokens=4096,
     )
 
     output = response.choices[0].message.content
