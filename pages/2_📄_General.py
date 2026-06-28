@@ -3,32 +3,29 @@ import pdfplumber
 import docx
 import io
 import time
-from openai import OpenAI, RateLimitError
+from groq import Groq, RateLimitError
 
 background = """
 <style>
-[data-testid="stApp"]{{
+[data-testid="stApp"]{
     background-color: #000000;
     opacity: 0.8;
     background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #000000 6px ), repeating-linear-gradient( #43434355, #434343 );
-}}
+}
 </style>
 """
 
-API_KEY = st.secrets["API_KEY"]
+GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=API_KEY
-)
+client = Groq(api_key=GROQ_API_KEY)
 
 st.markdown(background, unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
 # Model config
 # ---------------------------------------------------------------------------
-PRIMARY_MODEL  = "qwen/qwen3-next-80b-a3b-instruct:free"
-FALLBACK_MODEL = "meta-llama/llama-3.3-70b-instruct:free"
+PRIMARY_MODEL  = "llama-3.3-70b-versatile"
+FALLBACK_MODEL = "mixtral-8x7b-32768"
 MAX_RETRIES    = 3   # attempts per model — total max API calls = 2 x MAX_RETRIES
 
 
@@ -58,13 +55,11 @@ def call_api(messages):
             except RateLimitError as e:
                 retry_after = 30
                 try:
-                    meta = e.body.get("error", {{}}).get("metadata", {{}})
-                    retry_after = int(meta.get("retry_after_seconds", 30))
+                    retry_after = int(e.response.headers.get("retry-after", 30))
                 except Exception:
                     pass
 
                 is_last_attempt = (attempt == MAX_RETRIES - 1)
-                is_last_model   = (model_index == len(models_to_try) - 1)
 
                 if is_last_attempt:
                     break   # move to next model (or fall through to final error)
@@ -73,23 +68,22 @@ def call_api(messages):
                 label = st.empty()
                 for remaining in range(retry_after, 0, -1):
                     label.warning(
-                        f"⏳ Rate limited — retrying in **{{remaining}}s** "
-                        f"(attempt {{attempt + 1}} of {{MAX_RETRIES}} on `{{model}}`)..."
+                        f"⏳ Rate limited — retrying in **{remaining}s** "
+                        f"(attempt {attempt + 1} of {MAX_RETRIES} on `{model}`)..."
                     )
                     time.sleep(1)
                 label.empty()
 
             except Exception as e:
-                st.error(f"❌ Unexpected API error: `{{e}}`")
+                st.error(f"❌ Unexpected API error: `{e}`")
                 return None   # non-rate-limit error — stop immediately
 
     # Reached only when every attempt on every model was rate-limited
     total = MAX_RETRIES * len(models_to_try)
     msg = (
-        f"❌ Both `{{PRIMARY_MODEL}}` and `{{FALLBACK_MODEL}}` are rate-limited "
-        f"after {{MAX_RETRIES}} attempts each ({{total}} total tries). "
-        "Please wait a minute and try again, or add a provider key at "
-        "https://openrouter.ai/settings/integrations for higher limits."
+        f"❌ Both `{PRIMARY_MODEL}` and `{FALLBACK_MODEL}` are rate-limited "
+        f"after {MAX_RETRIES} attempts each ({total} total tries). "
+        "Please wait a minute and try again."
     )
     st.error(msg)
     return None
@@ -123,11 +117,11 @@ def extract_text_from_docx(uploaded_file):
 # Prompts
 # ---------------------------------------------------------------------------
 def build_prompt(text, category):
-    prompts = {{
+    prompts = {
         "general": (
             "Summarize and explain this document in simple words. "
             "Do not show any internal reasoning, chain-of-thought, or explanation "
-            f"of your process:\n\n{{text}}"
+            f"of your process:\n\n{text}"
         ),
         "legal": (
             "Summarize this legal document (this may be a legal notice too), "
@@ -135,7 +129,7 @@ def build_prompt(text, category):
             "actions to be taken by the receiver in case this is a legal notice; "
             "if this is not a legal notice, do not involve anything related to it). "
             "Do not show any internal reasoning, chain-of-thought, or explanation "
-            f"of your process:\n\n{{text}}\n\n"
+            f"of your process:\n\n{text}\n\n"
             "Keep it simple and easy to understand. Identify the laws and sections "
             "involved and what the receiver should do based on the judgements."
         ),
@@ -143,11 +137,11 @@ def build_prompt(text, category):
             "Summarize this medical document/report by focusing on diagnosis, "
             "symptoms, test results, and further treatment plans (if mentioned). "
             "Do not show any internal reasoning, chain-of-thought, or explanation "
-            f"of your process:\n\n{{text}}\n\n"
+            f"of your process:\n\n{text}\n\n"
             "Keep it simple and easy to understand. Identify the disease and "
             "treatment plan. Mention medications, further tests, or surgeries if present."
         ),
-    }}
+    }
     return prompts[category]
 
 
