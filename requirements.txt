@@ -4,3 +4,6 @@ python-docx
 requests
 groq
 python-dotenv
+sentence-transformers
+scikit-learn
+numpy

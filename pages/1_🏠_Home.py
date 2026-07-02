@@ -23,11 +23,6 @@ st.markdown("""
         -webkit-text-fill-color: transparent;
         display: inline;
     }
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-    }
     .main-header {
         text-align: center;
         padding: 2rem 0;
@@ -43,7 +38,7 @@ st.markdown("""
         margin-bottom: 4rem;
         line-height: 1.6;
     }
-    .custom-button-general, .custom-button-legal, .custom-button-medical {
+    .custom-button-legal, .custom-button-medical, .custom-button-compare {
         display: block;
         padding: 1.5rem;
         font-size: 1.5rem;
@@ -57,11 +52,6 @@ st.markdown("""
         color: #ffffff;
         backdrop-filter: blur(10px);
     }
-    .custom-button-general:hover {
-        transform: translateY(-2px);
-        background: rgba(107, 235, 52, 0.69);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
     .custom-button-legal:hover {
         transform: translateY(-2px);
         background: rgba(3, 115, 252, 0.69);
@@ -70,6 +60,11 @@ st.markdown("""
     .custom-button-medical:hover {
         transform: translateY(-2px);
         background: rgba(252, 3, 3, 0.69);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .custom-button-compare:hover {
+        transform: translateY(-2px);
+        background: rgba(168, 85, 247, 0.69);
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
     .feature-box {
@@ -99,30 +94,17 @@ st.markdown('<h1 class="main-header">Summar<div class="name-container">AI</div>z
 
 st.markdown('''
 <p class="description">
-    Transform your documents into clear, actionable insights with AI-powered summaries
+    Transform your medical and legal documents into clear, actionable insights with AI-powered summaries
 </p>
 ''', unsafe_allow_html=True)
 
-# Create three columns with equal spacing
+# Three columns: Legal | Medical | Compare
 col1, col2, col3 = st.columns([1, 1, 1])
 
 with col1:
     st.markdown('''
-        <a href="/General" class="custom-button-general" style="text-decoration: none; color:white;">
-            General
-        </a>
-        <div class="feature-box">
-            <h3>General Documents</h3>
-            <p>• Quick PDF summaries</p>
-            <p>• Key insights extraction</p>
-            <p>• Comprehensive analysis</p>
-        </div>
-    ''', unsafe_allow_html=True)
-
-with col2:
-    st.markdown('''
         <a href="/Legal" class="custom-button-legal" style="text-decoration: none; color:white;">
-            Legal
+            ⚖️ Legal
         </a>
         <div class="feature-box">
             <h3>Legal Documents</h3>
@@ -132,15 +114,28 @@ with col2:
         </div>
     ''', unsafe_allow_html=True)
 
-with col3:
+with col2:
     st.markdown('''
         <a href="/Medical" class="custom-button-medical" style="text-decoration: none; color:white;">
-            Medical
+            🩺 Medical
         </a>
         <div class="feature-box">
             <h3>Medical Reports</h3>
             <p>• Report interpretation</p>
             <p>• Key findings summary</p>
             <p>• Treatment overview</p>
+        </div>
+    ''', unsafe_allow_html=True)
+
+with col3:
+    st.markdown('''
+        <a href="/Compare" class="custom-button-compare" style="text-decoration: none; color:white;">
+            🔬 Compare
+        </a>
+        <div class="feature-box">
+            <h3>Report Comparison</h3>
+            <p>• Track health changes</p>
+            <p>• Spot improvements & risks</p>
+            <p>• Medication change log</p>
         </div>
     ''', unsafe_allow_html=True)
